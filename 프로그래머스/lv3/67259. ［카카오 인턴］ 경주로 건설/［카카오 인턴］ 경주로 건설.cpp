@@ -61,7 +61,7 @@ int solution(vector<vector<int>> board) {
                 tmpCost = curCost + 6;
             }
             
-            if(tmpCost <= costs[nx][ny][i]) {
+            if(tmpCost < costs[nx][ny][i]) {
                 costs[nx][ny][i] = tmpCost;
                 q.push({i, {nx, ny}});
             }
