@@ -21,15 +21,9 @@ vector<int> solution(vector<string> enroll, vector<string> referral, vector<stri
         int howMuch = amount[i] * 100;
         
         while(howMuch > 0 && toWho != "-") {
-            if(howMuch / 10 > 0) {
-                answer[people[toWho]] += (howMuch - howMuch / 10);
-                toWho = superior[toWho];
-                howMuch /= 10;
-            }
-            else {
-                answer[people[toWho]] += howMuch;
-                break;
-            }
+            answer[people[toWho]] += (howMuch - howMuch / 10);
+            toWho = superior[toWho];
+            howMuch /= 10;
         }
     }
      
