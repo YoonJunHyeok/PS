@@ -17,3 +17,4 @@ int solution(int n) {
     answer = dp[n];
     return answer;
 }
+// 카탈란 수
