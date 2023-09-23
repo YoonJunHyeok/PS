@@ -45,6 +45,7 @@ string solution(string play_time, string adv_time, vector<string> logs) {
         }
     }
     
+    int max_idx = 0;
     long long cur = 0;
     long long MAX = 0;
     queue<int> q;
@@ -54,7 +55,7 @@ string solution(string play_time, string adv_time, vector<string> logs) {
         q.push(cnt[idx]);
     }
     MAX = cur;
-    answer = get_str(0);
+    max_idx = 0;
     
     for(int idx = advTime; idx < playTime; idx++) {
         cur -= q.front();
@@ -63,9 +64,11 @@ string solution(string play_time, string adv_time, vector<string> logs) {
         q.push(cnt[idx]);
         if(MAX < cur) {
             MAX = cur;
-            answer = get_str(idx - advTime + 1);
+            max_idx = idx - advTime + 1;
         }
     }                              
+    
+    answer = get_str(max_idx);
     
     return answer;
 }
