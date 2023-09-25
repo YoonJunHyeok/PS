@@ -32,6 +32,7 @@ int solution(vector<int> food_times, long long k) {
     for(int idx = 0; idx < numOfFoods; idx++) {
         pair<int, int> cur = foods[idx];
         long long timeNeed = (long long)(cur.second - eaten) * leftOver;
+        // -> *계산 결과가 int를 넘어설 수도 있기에 long long으로 먼저 형변환 해주고 계산해야 한다.
         if(timeNeed == 0) {
             leftOver--;
             continue;
