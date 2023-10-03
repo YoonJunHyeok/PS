@@ -51,3 +51,5 @@ int solution(vector<int> info, vector<vector<int>> edges) {
     
     return answer;
 }
+
+// 비트마스킹 & DFS(백트랙킹?) => 바킹독 참조
