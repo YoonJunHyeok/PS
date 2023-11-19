@@ -1,3 +1,7 @@
+#note
+1. 투포인터 알고리즘 풀이법 잘 떠올림
+2. 투포인터 알고리즘 종료 조건 좀 찾아봐야 될 듯
+
 # [level 2] 두 큐 합 같게 만들기 - 118667 
 
 [문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/118667) 
