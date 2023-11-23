@@ -1,22 +1,32 @@
 #include <string>
 #include <vector>
 #include <queue>
-#define INF 10000000+1
+#include <algorithm>
+
 #define MAX 50000+1
+#define INF 10000000+1
 
 using namespace std;
 
-vector<pair<int, int>> routes[MAX];
-vector<bool> isSummit;
-vector<int> cgates, intensity;
+vector<pair<int, int>> adj[MAX];
+bool isSummit[MAX];
+int intensity[MAX];
 
-pair<int, int> dijkstra() {
+vector<int> solution(int n, vector<vector<int>> paths, vector<int> gates, vector<int> summits) {
+    vector<int> answer;
+    fill(intensity, intensity+n+2, INF);
     priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> pq;
-    int minSummit = INF, minIntensity = INF;
     
-    for(int gate: cgates) {
-        pq.push({0, gate});
+    for(auto path: paths) {
+        adj[path[0]].push_back({path[2], path[1]});
+        adj[path[1]].push_back({path[2], path[0]});
+    }
+    for(auto summit: summits) {
+        isSummit[summit] = true;
+    }
+    for(auto gate: gates) {
         intensity[gate] = 0;
+        pq.push({0, gate});
     }
     
     while(!pq.empty()) {
@@ -24,56 +34,31 @@ pair<int, int> dijkstra() {
         int curIdx = pq.top().second;
         pq.pop();
         
-        if(intensity[curIdx] < curIntensity) continue;
+        if(intensity[curIdx] != curIntensity) continue;
         
-        if(isSummit[curIdx]) {
-            if(curIntensity <= minIntensity) {
-                if(curIntensity == minIntensity) {
-                    minSummit = min(minSummit, curIdx);
-                }
-                else {
-                    minSummit = curIdx;
-                }
-                minIntensity = curIntensity;
-            }
-            continue;
-        }
-        
-        for(pair<int, int> route: routes[curIdx]) {
-            int nxtIntensity = route.first;
-            int nxtIdx = route.second;
-            int curMaxIntensity = max(curIntensity, nxtIntensity);
+        for(auto nxt: adj[curIdx]) {
+            int nxtWeight = nxt.first;
+            int nxtIdx = nxt.second;
             
-            if(intensity[nxtIdx] == INF || curMaxIntensity < intensity[nxtIdx]) {
-                intensity[nxtIdx] = curMaxIntensity;
-                pq.push({curMaxIntensity, nxtIdx});
-            }
+            if(intensity[nxtIdx] <= max(curIntensity, nxtWeight)) continue;
+            intensity[nxtIdx] = max(curIntensity, nxtWeight);
+            
+            if(isSummit[nxtIdx]) continue;
+            pq.push({intensity[nxtIdx], nxtIdx});
         }
     }
     
-    return {minSummit, minIntensity};
-}
-
-vector<int> solution(int n, vector<vector<int>> paths, vector<int> gates, vector<int> summits) {
-    vector<int> answer;
-    
-    intensity = vector<int>(n + 1, INF);
-    
-    for(vector<int> path: paths) {
-        routes[path[0]].push_back({path[2], path[1]});
-        routes[path[1]].push_back({path[2], path[0]});
+    int minIntensity = INF, minIdx;
+    sort(summits.begin(), summits.end());
+    for(auto summit: summits) {
+        if(intensity[summit] < minIntensity) {
+            minIntensity = intensity[summit];
+            minIdx = summit;
+        }
     }
     
-    isSummit = vector<bool>(n + 1, false);
-    for(int summit: summits) {
-        isSummit[summit] = true;
-    }
-    
-    cgates = gates;
-    
-    pair<int, int> res = dijkstra();
-    answer.push_back(res.first);
-    answer.push_back(res.second);
+    answer.push_back(minIdx);
+    answer.push_back(minIntensity);
     
     return answer;
 }
