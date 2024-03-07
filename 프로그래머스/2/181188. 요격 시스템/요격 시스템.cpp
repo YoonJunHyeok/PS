@@ -15,19 +15,13 @@ int solution(vector<vector<int>> targets) {
     
     sort(targets.begin(), targets.end(), cmp);
     
-    int idx = 1;
     int prevEnd = targets[0][1];
-    while(1) {
-        if(idx >= totalTargets) break;
-        
+    for(int idx = 1; idx < totalTargets; idx++) {
         if(targets[idx][0] >= prevEnd) {
             answer++;
             prevEnd = targets[idx][1];
         }
-        
-        idx++;
     }
-    
     answer++;
     
     return answer;
