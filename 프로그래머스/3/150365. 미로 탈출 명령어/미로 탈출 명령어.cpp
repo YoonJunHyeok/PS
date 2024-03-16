@@ -12,16 +12,16 @@ string answer = "";
 int gn, gm, gr, gc, gk;
 
 void dfs(int curX, int curY, int dist, string str) {
-    if(answer != "") return;
+    if(answer != "") return; // 다른 곳에서 먼저 찾았을 때
     
     if(curX == gr && curY == gc && dist == gk) {
         answer = str;
         return;
     }
     
-    if(dist >= gk) return;
+    if(dist >= gk) return; // 이동하는 거리를 넘게 이동할 때
     
-    if(abs(gr - curX) + abs(gc - curY) > gk - dist) return;
+    if(abs(gr - curX) + abs(gc - curY) > gk - dist) return; // 현재 위치에서 목적지로 남은 이동거리 내에서 갈 수 없을 때
     
     for(int dir = 0; dir < 4; dir++) {
         int nxtX = curX + dx[dir];
