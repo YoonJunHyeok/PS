@@ -1,4 +1,9 @@
--- 코드를 입력하세요
+WITH T as (
+    SELECT 
+        MAX(PRICE) as MAX_PRICE
+    FROM 
+        FOOD_PRODUCT
+)
 SELECT
     PRODUCT_ID
     , PRODUCT_NAME
@@ -6,10 +11,6 @@ SELECT
     , CATEGORY
     , PRICE
 FROM 
-    FOOD_PRODUCT
+    FOOD_PRODUCT, T
 WHERE
-    PRICE in (
-        SELECT 
-            MAX(PRICE)
-        FROM FOOD_PRODUCT
-    )
+    PRICE = MAX_PRICE
