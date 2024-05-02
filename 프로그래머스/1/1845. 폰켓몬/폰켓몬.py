@@ -1,6 +1,4 @@
 def solution(nums):
-    s = set()
-    for n in nums:
-        s.add(n)
-    answer = len(nums) / 2 if len(s) >= len(nums) / 2 else len(s)
+    s = set(nums)
+    answer = min(len(nums)/2, len(s))
     return answer
