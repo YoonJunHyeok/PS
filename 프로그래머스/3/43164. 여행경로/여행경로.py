@@ -1,18 +1,10 @@
 dict = {}
 is_used = []
-answer = []
-flag = False
 N = int()
 
-def DFS(airport, cities):
-    global answer, flag
-    if flag:
-        return
-    
+def DFS(airport, cities):    
     if len(cities) == N + 1:
-        answer = cities
-        flag = True
-        return
+        return cities
     
     if airport not in dict:
         return
@@ -22,11 +14,15 @@ def DFS(airport, cities):
             continue
             
         is_used[idx] = True
-        DFS(nxt, cities + [nxt])
+        ret = DFS(nxt, cities + [nxt])
         is_used[idx] = False
+        
+        if ret:
+            return ret
     
 def solution(tickets):
-    global dict, is_used, answer, N
+    global dict, is_used, N
+    answer = []
     N = len(tickets)
     is_used = [False] * N
     
@@ -39,6 +35,6 @@ def solution(tickets):
     for start in dict:
         dict[start].sort(key=lambda x: x[0])
 
-    DFS("ICN", ["ICN"])
+    answer = DFS("ICN", ["ICN"])
     
     return answer
