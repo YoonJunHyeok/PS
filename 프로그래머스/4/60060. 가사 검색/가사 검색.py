@@ -1,76 +1,36 @@
 from collections import defaultdict
-
-import sys
-sys.setrecursionlimit(10**6)
-
-# Trie
-class Node(object):
-    def __init__(self, key, word=None):
-        self.key = key
-        self.word = word
-        self.cnt = 0
-        self.children = {}
-        
-    def finalize(self):
-        self.cnt = 1 if self.word is not None else 0
-        for node in self.children.values():
-            self.cnt += node.finalize()
-            
-        return self.cnt
-    
-class Trie(object):
-    def __init__(self):
-        self.head = Node(None)
-        
-    def insert(self, word):
-        cur_node = self.head
-        
-        for char in word:
-            if char not in cur_node.children:
-                cur_node.children[char] = Node(char)
-            cur_node = cur_node.children[char]
-    
-        cur_node.word = word
-        
-    def finalize(self):
-        self.head.finalize()
-        
-    def search(self, word):
-        cur_node = self.head
-        
-        for char in word:
-            if char == '?':
-                break
-                
-            if char not in cur_node.children:
-                return 0
-            
-            cur_node = cur_node.children[char]
-            
-        return cur_node.cnt
+from bisect import bisect_left, bisect_right
 
 def solution(words, queries):
-    answer = []            
+    answer = []
     
-    forward_trie, backward_trie = defaultdict(Trie), defaultdict(Trie)
+    forward_words, backward_words = defaultdict(list), defaultdict(list)
     
     for word in words:
         length = len(word)
-        forward_trie[length].insert(word)
-        backward_trie[length].insert(word[::-1])
+        forward_words[length].append(word)
+        backward_words[length].append(word[::-1])
         
-    for trie in forward_trie.values():
-        trie.finalize()
+    for word_list in forward_words.values():
+        word_list.sort()
         
-    for trie in backward_trie.values():
-        trie.finalize()
+    for word_list in backward_words.values():
+        word_list.sort()
         
     for query in queries:
         length = len(query)
         
-        if query[0] == '?':
-            answer.append(backward_trie[length].search(query[::-1]))
+        aaquery = query.replace('?', 'a')
+        zzquery = query.replace('?', 'z')
+        
+        if query[0] == '?':  
+            left = bisect_left(backward_words[length], aaquery[::-1])
+            right = bisect_right(backward_words[length], zzquery[::-1])
+            answer.append(right-left)
+            
         else:
-            answer.append(forward_trie[length].search(query))
+            left = bisect_left(forward_words[length], aaquery)
+            right = bisect_right(forward_words[length], zzquery)
+            answer.append(right-left)
     
     return answer
