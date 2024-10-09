@@ -12,6 +12,7 @@ def solution(commands):
         x = find(x)
         y = find(y)
         
+        # 순서 고정
         parents[y] = x
             
     for command_str in commands:
@@ -20,9 +21,9 @@ def solution(commands):
         
         if command_type == "UPDATE":
             if len(command) == 4:
-                r = int(command[1]) - 1
-                c = int(command[2]) - 1
-                new_v = command[3]
+                r, c, new_v = command[1:]
+                r = int(r) - 1
+                c = int(c) - 1
                 
                 cur_idx = r * 50 + c
                 p_idx = find(cur_idx)
@@ -33,10 +34,7 @@ def solution(commands):
                 
                 board = [v2 if v == v1 else v for v in board]
         elif command_type == "MERGE":
-            r1 = int(command[1]) - 1
-            c1 = int(command[2]) - 1
-            r2 = int(command[3]) - 1
-            c2 = int(command[4]) - 1
+            r1, c1, r2, c2 = map(lambda x: int(x) - 1, command[1:])
             
             idx1 = r1 * 50 + c1
             idx2 = r2 * 50 + c2
@@ -55,8 +53,7 @@ def solution(commands):
                     parents[idx] = p_idx
                     
         elif command_type == "UNMERGE":
-            r = int(command[1]) - 1
-            c = int(command[2]) - 1
+            r, c = map(lambda x: int(x) - 1, command[1:])
             
             cur_idx = r * 50 + c
             p_idx = find(cur_idx)
