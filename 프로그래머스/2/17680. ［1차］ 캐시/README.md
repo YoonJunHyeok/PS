@@ -1,15 +1,10 @@
-# note
-1. 처음에 unordered_set으로 접근함 -> unordered_set이 insert할 때 순서가 뭔가 이상함. 나중에 찾아봐야 할듯. -> deque로 변경
-2. string 전체를 소문자 또는 대문자로 변경할 때 transform 함수 사용
-3. deque에 대해서 더 잘 알아야 할 듯
-
 # [level 2] [1차] 캐시 - 17680 
 
-[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/17680) 
+[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/17680?language=python3) 
 
 ### 성능 요약
 
-메모리: 4.21 MB, 시간: 0.26 ms
+메모리: 17.5 MB, 시간: 85.65 ms
 
 ### 구분
 
@@ -21,7 +16,7 @@
 
 ### 제출 일자
 
-2023년 11월 0일 16:0:24
+2025년 02월 09일 17:57:28
 
 ### 문제 설명
 
