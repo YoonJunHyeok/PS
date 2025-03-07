@@ -17,12 +17,13 @@ def solution(user_id, banned_id):
     num_user = len(user_id)
     num_banned = len(banned_id)
     banned_used = [False for _ in range(num_banned)]
+    cur_d = deque()
     answer_s = set()
     
-    def dfs(user_idx, cur_l):
+    def dfs(user_idx):
         if user_idx == num_user:
             if all(banned_used):
-                answer_s.add(tuple(sorted(cur_l)))
+                answer_s.add(tuple(sorted(cur_d)))
             return
         
         for banned_idx in range(num_banned):
@@ -31,15 +32,16 @@ def solution(user_id, banned_id):
                 
             if is_match(user_id[user_idx], banned_id[banned_idx]):
                 banned_used[banned_idx] = True
-                cur_l.append(user_id[user_idx])
-                dfs(user_idx + 1, cur_l)
+                cur_d.append(user_id[user_idx])
+                dfs(user_idx + 1)
                 banned_used[banned_idx] = False
-                cur_l.pop()
+                cur_d.pop()
                 
-        dfs(user_idx + 1, cur_l)
-    
-    d = deque()
-    dfs(0, d)
+        dfs(user_idx + 1)
+        
+        return
+
+    dfs(0)
                 
     answer = len(answer_s)
     
