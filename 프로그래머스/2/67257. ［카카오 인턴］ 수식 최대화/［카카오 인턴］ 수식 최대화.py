@@ -3,7 +3,7 @@ from math import inf
 from itertools import permutations
 
 def calculate(nums: list, ops: list, priority: list) -> int:
-    for p_op in priority:        
+    for p_op in priority: 
         while p_op in ops:
             idx = ops.index(p_op)
             if p_op == '*':
@@ -13,8 +13,9 @@ def calculate(nums: list, ops: list, priority: list) -> int:
             elif p_op == '-':
                 n = nums[idx] - nums[idx + 1]
                 
-            nums[idx] = n
+            nums.insert(idx, n)
             del nums[idx + 1]
+            del nums[idx + 1] # 위에서 del 했으니
             del ops[idx]
     return abs(nums[0])
 
