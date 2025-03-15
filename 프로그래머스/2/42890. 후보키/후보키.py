@@ -1,36 +1,35 @@
 from itertools import combinations
 
-def isUnique(relation, comb) -> bool:
-    selected_relation = set()
-    for row in relation:
-        tmp = []
-        for idx in comb:
-            tmp.append(row[idx])
-        selected_relation.add(tuple(tmp))
-    
-    return len(relation) == len(selected_relation)
-
-def isMinimal(candidateKeys, comb):
-    for candidateKey in candidateKeys:
-        if set(candidateKey).issubset(set(comb)):
-            return False
-    return True
-
 def solution(relation):
-    candidateKeys = set()
-    numOfColumns = len(relation[0])
-    columns = [idx for idx in range(numOfColumns)]
+    row_len = len(relation)
+    column_len = len(relation[0])
+    candidates = list(range(column_len))
     
-    for numOfColumn in range(1, numOfColumns + 1):
-        combs = combinations(columns, numOfColumn)
-        
-        for comb in combs:
-            if not isUnique(relation, comb):
-                continue
-                
-            if not isMinimal(candidateKeys, comb):
-                continue
-                
-            candidateKeys.add(comb)
+    candidate_keys = list()
     
-    return len(candidateKeys)
+    for step in range(1, column_len + 1):
+        for column_idxs in combinations(candidates, step):
+            flag = False
+            column_idxs_str = "".join(list(map(str, column_idxs)))
+            for candidate_key in candidate_keys:
+                if all(c in column_idxs_str for c in candidate_key):
+                    flag = True
+                    break
+                    
+            if flag:
+                continue
+            
+            s = set()
+            for row_idx in range(row_len):
+                row = []
+                for column_idx in column_idxs:
+                    row.append(relation[row_idx][column_idx])
+                    
+                s.add(tuple(row))
+            
+            if len(s) == row_len:
+                candidate_keys.append(column_idxs_str)
+            
+    answer = len(candidate_keys)
+    
+    return answer
