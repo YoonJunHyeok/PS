@@ -1,31 +1,30 @@
 from itertools import product
 
 def solution(users, emoticons):
-    answer = [0, 0]
+    answer = []
+    n = len(users)
+    m = len(emoticons)
     
-    available_discounts = [10, 20, 30, 40]
-    
-    for discounts in product(available_discounts, repeat=len(emoticons)):
-        cur_subscribe = 0
-        cur_sales = 0
+    for discounts in product([10, 20, 30, 40], repeat=m):
+        cur_plus = 0
+        cur_sell = 0
         
-        for limit_ratio, limit_price in users:
-            buy_price = 0
-            for emoticon, discount in zip(emoticons, discounts):
-                if discount < limit_ratio:
+        for user in users:
+            rate_limit, price_limit = user
+            cur_user_sell = 0
+            
+            for discount, emoticon_price in zip(discounts, emoticons):
+                if rate_limit > discount:
                     continue
-                    
-                buy_price += emoticon // 100 * (100 - discount)
+                cur_user_sell += emoticon_price / 100 * (100 - discount)
                 
-                if buy_price >= limit_price:
-                    cur_subscribe += 1
+                if cur_user_sell >= price_limit:
+                    cur_plus += 1
                     break
             else:
-                cur_sales += buy_price  
-        
-        if cur_subscribe > answer[0]:
-            answer = [cur_subscribe, cur_sales]
-        elif cur_subscribe == answer[0] and cur_sales > answer[1]:
-            answer = [cur_subscribe, cur_sales]
+                cur_sell += cur_user_sell
+                    
+        if len(answer) == 0 or answer[0] < cur_plus or (answer[0] == cur_plus and answer[1] < cur_sell):
+            answer = [cur_plus, cur_sell]
     
     return answer
