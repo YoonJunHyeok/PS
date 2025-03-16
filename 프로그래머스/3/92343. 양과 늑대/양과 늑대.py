@@ -1,41 +1,25 @@
-def solution(info, edges):
+def solution(info, edges):    
+    global answer
     answer = 0
+    visited = [False] * len(info)
     
-    node_cnt = len(info)
-    state_cnt = 1 << node_cnt
-    visited = [False] * state_cnt
-    children = [[] for _ in range(node_cnt)]
-    for p_idx, c_idx in edges:
-        children[p_idx].append(c_idx)
+    def dfs(sheep_cnt, wolf_cnt):
+        global answer
+        if wolf_cnt >= sheep_cnt:
+            return
+        else:
+            answer = max(answer, sheep_cnt)
         
-    stack = list()
-    stack.append(1) # init_state = 1 -> root 
-    
-    while stack:
-        cur_state = stack.pop()
-        
-        if visited[cur_state]:
-            continue
-        visited[cur_state] = True
-        
-        cur_sheep = 0
-        cur_wolf = 0
-        for idx in range(node_cnt):
-            if cur_state & (1 << idx):
-                if info[idx] == 0:
-                    cur_sheep += 1
+        for p_idx, c_idx in edges:
+            if visited[p_idx] and not visited[c_idx]:
+                visited[c_idx] = True
+                if info[c_idx] == 0:
+                    dfs(sheep_cnt + 1, wolf_cnt)
                 else:
-                    cur_wolf += 1
-        
-        if cur_wolf >= cur_sheep:
-            continue
-            
-        answer = max(answer, cur_sheep)
-            
-        for idx in range(node_cnt):
-            if cur_state & (1 << idx):
-                for child_idx in children[idx]:
-                    nxt_state = cur_state | (1 << child_idx)
-                    stack.append(nxt_state)
+                    dfs(sheep_cnt, wolf_cnt + 1)
+                visited[c_idx] = False
+    
+    visited[0] = True
+    dfs(1, 0)
     
     return answer
