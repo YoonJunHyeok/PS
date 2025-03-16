@@ -1,55 +1,32 @@
+from itertools import product
+
 def solution(n, info):
     answer = [-1]
+    
     max_diff = -1
-    ryan_info = [0]*11
     
-    def check():
-        ryan_score = 0
-        apeach_score = 0
+    for ryan_wins in product([0, 1], repeat=11):
+        needed_arrows = [info[idx] + 1 if ryan_wins[idx] else 0 for idx in range(11)]
+        needed_arrows_cnt = sum(needed_arrows)
         
-        for idx in range(11):
-            if ryan_info[idx] == 0 and info[idx] == 0:
-                continue
+        if needed_arrows_cnt <= n:
+            ryan_score = sum([10 - idx for idx in range(11) if ryan_wins[idx]])
+            apeach_score = sum([10 - idx for idx in range(11) if not ryan_wins[idx] and info[idx] > 0])
             
-            if ryan_info[idx] > info[idx]:
-                ryan_score += (10 - idx)
-            else:
-                apeach_score += (10 - idx)
+            if ryan_score > apeach_score:
+                if needed_arrows_cnt < n:
+                    needed_arrows[10] += (n - needed_arrows_cnt)
                 
-        return (ryan_score > apeach_score, abs(ryan_score - apeach_score))
-    
-    def dfs(idx, left_arrow):       
-        nonlocal answer, max_diff, ryan_info
-        
-        if idx == 11 or left_arrow == 0:
-            can_win, cur_diff = check()
-            
-            if can_win:
-                if left_arrow > 0:
-                    ryan_info[10] += left_arrow
+                cur_diff = ryan_score - apeach_score
                 
                 if cur_diff > max_diff:
-                    answer = ryan_info.copy()
                     max_diff = cur_diff
+                    answer = needed_arrows.copy()
                 elif cur_diff == max_diff:
-                    for i in range(11):
-                        if ryan_info[10 - i] > answer[10 - i]:
-                            answer = ryan_info.copy()
+                    for idx in range(11):
+                        if answer[10 - idx] < needed_arrows[10 - idx]:
+                            answer = needed_arrows.copy()
+                        elif answer[10 - idx] > needed_arrows[10 - idx]:
                             break
-                        elif answer[10 - i] > ryan_info[10 - i]:
-                            break
-                            
-                if left_arrow > 0:
-                    ryan_info[10] -= left_arrow
-            return
-        elif left_arrow >= info[idx] + 1:
-            ryan_info[idx] = info[idx] + 1
-            dfs(idx + 1, left_arrow - info[idx] - 1)
-            ryan_info[idx] = 0
-            
-        ryan_info[idx] = 0
-        dfs(idx + 1, left_arrow)
-        
-    dfs(0, n)
     
     return answer
