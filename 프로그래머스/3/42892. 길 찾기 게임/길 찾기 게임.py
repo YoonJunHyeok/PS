@@ -1,6 +1,8 @@
 import sys
 
-sys.setrecursionlimit(10 ** 6)
+sys.setrecursionlimit(10000)
+# 전위 순회, 후위 순회를 stack으로 해도, 초기 tree 구성할 때 1000을 넘겨버림
+# 1000이하라 했지만, main, solution, setTree 부르면서 1000을 넘기는 듯
 
 def setTree(parentIdx, childInfo):
     global children, nodeX
@@ -16,22 +18,35 @@ def setTree(parentIdx, childInfo):
     else:
         setTree(children[parentIdx][childDir], childInfo)
         
-def preOrder(curIdx):
+def preOrder(rootIdx):
     global preOrderIdx
     
-    preOrderIdx.append(curIdx + 1)
-    for childDir in range(2):
-        if children[curIdx][childDir] != -1:
-            preOrder(children[curIdx][childDir])
+    stack = list()
+    stack.append(rootIdx)
+    
+    while stack:
+        curIdx = stack.pop()
+    
+        preOrderIdx.append(curIdx + 1)
+        for childDir in reversed(range(2)):
+            if children[curIdx][childDir] != -1:
+                stack.append(children[curIdx][childDir])
     
 def postOrder(curIdx):
     global postOrderIdx
     
-    for childDir in range(2):
-        if children[curIdx][childDir] != -1:
-            postOrder(children[curIdx][childDir])
-            
-    postOrderIdx.append(curIdx + 1)
+    stack = list()
+    stack.append(curIdx)
+    
+    while stack:
+        curIdx = stack.pop()
+        postOrderIdx.append(curIdx + 1)
+    
+        for childDir in range(2):
+            if children[curIdx][childDir] != -1:
+                stack.append(children[curIdx][childDir])
+                
+    postOrderIdx = postOrderIdx[::-1]
 
 def solution(nodeinfo):
     global children, nodeX, preOrderIdx, postOrderIdx
