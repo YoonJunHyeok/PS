@@ -24,19 +24,23 @@ def solution(play_time, adv_time, logs):
         play_cnt[start_sec] += 1
         play_cnt[end_sec] -= 1
         
-    for idx in range(1, play_time_sec):
+    for idx in range(1, play_time_sec + 1):
         play_cnt[idx] += play_cnt[idx - 1]
         
     max_cnt = 0
     max_cnt_sec = 0
     cur_cnt = sum(play_cnt[:adv_time_sec])
+    max_cnt = cur_cnt
     
-    for idx in range(adv_time_sec - 1, play_time_sec):
-        cur_cnt = cur_cnt - play_cnt[idx - adv_time_sec] + play_cnt[idx]
+    start_idx = 0
+    for end_idx in range(adv_time_sec, play_time_sec + 1):
+        cur_cnt -= play_cnt[start_idx]
+        cur_cnt += play_cnt[end_idx]
+        start_idx += 1
         
         if cur_cnt > max_cnt:
             max_cnt = cur_cnt
-            max_cnt_sec = idx - adv_time_sec + 1
+            max_cnt_sec = start_idx
         
     answer = to_char(max_cnt_sec)
 
