@@ -1,11 +1,16 @@
-from collections import defaultdict
 from bisect import bisect_left
+from collections import deque, defaultdict
 
 class Node:
     def __init__(self):
-        self.scores = []
         self.children = defaultdict(Node)
+        self.scores = deque()
         
+    def insert(self, score):
+        insert_idx = bisect_left(self.scores, score)
+        
+        self.scores.insert(insert_idx, score)
+
 class Trie:
     def __init__(self):
         self.root = Node()
@@ -13,49 +18,52 @@ class Trie:
     def insert(self, infos):
         cur_node = self.root
         
-        for info in infos[:-1]:
+        infos_list = list(infos.split(" "))
+        score = int(infos_list[-1])
+        for info in infos_list[:-1]:
             cur_node = cur_node.children[info]
-            
-        idx = bisect_left(cur_node.scores, infos[-1])
-        cur_node.scores.insert(idx, infos[-1])
+        cur_node.insert(score)
         
-    def search(self, querys):
-        cur_nodes = [self.root]
+    def search(self, queries):
+        queries = queries.replace("and " , "")
+        queries_list = list(queries.split(" "))
+        base_score = int(queries_list[-1])
         
-        for query in querys[:-1]:
-            nxt_nodes = []
+        stack = deque()
+        stack.append(self.root)
+        for query in queries_list[:-1]:
+            tmp_stack = deque()
             
-            for cur_node in cur_nodes:
+            while stack:
+                cur_node = stack.pop()
+                
                 if query == "-":
-                    for nxt_node in cur_node.children.keys():
-                        nxt_nodes.append(cur_node.children[nxt_node])
+                    for child in cur_node.children.values():
+                        tmp_stack.append(child)
                 else:
-                    if query in cur_node.children.keys():
-                        nxt_nodes.append(cur_node.children[query])
+                    if query in cur_node.children:
+                        tmp_stack.append(cur_node.children[query])
                         
-            cur_nodes = nxt_nodes
+            stack = tmp_stack
         
-        cnt = 0
-        for cur_node in cur_nodes:
-            idx = bisect_left(cur_node.scores, querys[-1])                     
-            cnt += len(cur_node.scores) - idx
+        qualified_cnt = 0
+        for node in stack:
+            scores = node.scores
+            disqualified_cnt = bisect_left(scores, base_score)
             
-        return cnt
+            qualified_cnt += len(scores) - disqualified_cnt
+    
+        return qualified_cnt
 
 def solution(info, query):
     answer = []
     
     trie = Trie()
-    for candidate in info:
-        candidate_infos = candidate.split()
-        candidate_infos[-1] = int(candidate_infos[-1])
-        
-        trie.insert(candidate_infos)
-        
-    for q_str in query:
-        q = q_str.replace("and", "").split()
-        q[-1] = int(q[-1])
-        
-        answer.append(trie.search(q))
+    
+    for cur_info in info:
+        trie.insert(cur_info)
+    
+    for cur_query in query:
+        answer.append(trie.search(cur_query))
     
     return answer

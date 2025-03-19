@@ -1,10 +1,10 @@
 # [level 2] 순위 검색 - 72412 
 
-[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/72412#qna) 
+[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/72412) 
 
 ### 성능 요약
 
-메모리: 33.2 MB, 시간: 1665.48 ms
+메모리: 32.2 MB, 시간: 2048.74 ms
 
 ### 구분
 
@@ -16,7 +16,7 @@
 
 ### 제출 일자
 
-2024년 10월 11일 23:29:34
+2025년 03월 19일 22:44:20
 
 ### 문제 설명
 
