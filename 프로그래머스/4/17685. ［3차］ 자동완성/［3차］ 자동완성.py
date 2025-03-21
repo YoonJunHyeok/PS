@@ -1,26 +1,41 @@
-def lcs(a: str, b: str) :
-    ret = 0
-    for idx in range(min(len(a), len(b))):
-        if a[idx] == b[idx]:
-            ret += 1
-        else:
-            break
+from collections import defaultdict
+
+class Node:
+    def __init__(self):
+        self.children = defaultdict(Node)
+        self.cnts = 0 # 이 노드 아래로 단어가 존재하는 개수
+        
+class Trie:
+    def __init__(self):
+        self.root = Node()
+        
+    def insert(self, word):
+        cur_node = self.root
+        
+        for c in word:
+            cur_node = cur_node.children[c]
+            cur_node.cnts += 1
             
-    return ret
+    def minimum_search(self, word):
+        cur_node = self.root
+        
+        for idx, c in enumerate(word):
+            cur_node = cur_node.children[c]
+            
+            if cur_node.cnts == 1:
+                return idx + 1
+        
+        return len(word)
 
 def solution(words):
     answer = 0
     
-    words.sort()
-
-    for idx, word in enumerate(words):
-        if idx == 0:
-            answer += min(len(word), lcs(word, words[idx + 1]) + 1)
-        elif idx == len(words) - 1:
-            answer += min(len(word), lcs(word, words[idx - 1]) + 1)
-        else:
-            tmp1 = min(len(word), lcs(word, words[idx - 1]) + 1)
-            tmp2 = min(len(word), lcs(word, words[idx + 1]) + 1)
-            answer += max(tmp1, tmp2)
+    trie = Trie()
+    
+    for word in words:
+        trie.insert(word)
+    
+    for word in words:
+        answer += trie.minimum_search(word)
     
     return answer
