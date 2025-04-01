@@ -1,26 +1,13 @@
-from collections import defaultdict
-
-def do_count(tangerines: list) -> dict:
-    ret = defaultdict(int)
-    
-    for tangerine in tangerines:
-        ret[tangerine] += 1
-        
-    return ret
+from collections import Counter
 
 def solution(k, tangerine):
-    answer = 0
+    size_count = Counter(tangerine)
     
-    size_count = do_count(tangerine)
+    counts_desc = sorted(size_count.values(), reverse=True)
     
-    size_count_sorted = sorted(size_count.items(), key=lambda x: -x[1])
-    
-    cur_cnt = 0
-    for size, count in size_count_sorted:
-        cur_cnt += count
-        answer += 1
+    total = 0
+    for idx, cnt in enumerate(counts_desc):
+        total += cnt
         
-        if cur_cnt >= k:
-            break
-    
-    return answer
+        if total >= k:
+            return idx + 1
